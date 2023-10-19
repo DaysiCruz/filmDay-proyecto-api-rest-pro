@@ -1,1 +1,1 @@
-# filmDay-proyecto-api-rest-pro
+Proyecto del curso practico de API REST con JavaScript
