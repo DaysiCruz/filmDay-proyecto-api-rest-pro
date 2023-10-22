@@ -32,9 +32,14 @@ function createMovies(movies, container, lazyLoad = false) {
         const movieImg = document.createElement('img');
         movieImg.classList.add('movie-img');
         movieImg.setAttribute('alt', movie.title);
+        
         movieImg.setAttribute(
             lazyLoad ? 'data-img' : 'src','https://image.tmdb.org/t/p/w300' + movie.poster_path);
-
+            movieImg.addEventListener('error', () => {
+                movieImg.setAttribute(
+                    'src',
+                    '' ); //RECORDAR PONER URL DE UNA IMAGEN BUSCADA POR TI AQUI 
+            });
         if(lazyLoad) {
             lazyLoader.observe(movieImg);
         }
@@ -91,7 +96,7 @@ async function getMoviesByCategory(id) {
     });
     const movies = data.results;
     
-    createMovies(movies, genericSection);
+    createMovies(movies, genericSection, true);
 }
 async function getMoviesBySearch(query) {
     const { data } = await api('search/movie', {
