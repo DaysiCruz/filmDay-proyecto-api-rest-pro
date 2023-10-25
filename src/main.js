@@ -115,30 +115,46 @@ async function getMoviesBySearch(query) {
 async function getTrendingMovies() {
     const { data } = await api('trending/movie/day');
     const movies = data.results;
+    maxPage = data.total_pages;
 
     createMovies(movies, genericSection, {lazyLoad:true, clean:true});
 
-    const btnLoadMore = document.createElement('button');
-    btnLoadMore.innerText = 'Load More';
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
-    genericSection.appendChild(btnLoadMore);
+    // const btnLoadMore = document.createElement('button');
+    // btnLoadMore.innerText = 'Load More';
+    // btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
+    // genericSection.appendChild(btnLoadMore);
 
 }
-let page = 1;
+ 
+
 async function getPaginatedTrendingMovies() {
-    const { data } = await api('trending/movie/day', {
-        params: {
-            page,
-        },
-    });
-    const movies = data.results;
-
-    createMovies(movies, genericSection,{lazyLoad:true, clean:false});
-
-    const btnLoadMore = document.createElement('button');
-    btnLoadMore.innerText = 'Load More';
-    btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
-    genericSection.appendChild(btnLoadMore);
+    const  {
+        scrollTop,
+        scrollHeight,
+        clientHeight
+    } = document.documentElement;
+    const scrollIsbottom = (scrollTop + clientHeight) 
+    >= scrollHeight - 15;
+    const pageIsNotMax = page < maxPage;
+    
+    
+    if(scrollIsbottom && pageIsNotMax) {
+        page++;
+        const { data } = await api('trending/movie/day', {
+            params: {
+                page,
+            },
+        });
+        const movies = data.results;
+    
+        createMovies(movies, genericSection,
+        {lazyLoad:true, clean:false});
+    
+    }
+    // const btnLoadMore = document.createElement('button');
+    // btnLoadMore.innerText = 'Load More';
+    // btnLoadMore.addEventListener('click', getPaginatedTrendingMovies);
+    // genericSection.appendChild(btnLoadMore);
 
 }
 
